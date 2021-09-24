@@ -9,27 +9,35 @@ namespace App4.ViewModels
     public class CountViewModel : BaseViewModel
     {
         int _contador;
-        int _buttonClickCommand;
-
+        ICommand _buttonClickCommand;
+        ICommand _resetClickCommand;
+        string _countConverted;
         public CountViewModel()
         {
-            _contador = 0;
-            ICommand _buttoClickComnmands;
-            string _countConverted;
-
+            _contador = 0;         
         }
 
-        public int Contador { get => _contador;
+        public int Contador 
+        { 
+            get => _contador;
             set
             {
                 if (value == _contador) return;
                 _contador = value;
+                CountConverted = $"Has dado click {_contador} veces";
                 OnPropertyChanged();
             }
             }
         public string CountConverted
         {
-            get => $"Has dado clic {_contador} veces";
+            get => _countConverted;
+            set
+            {
+                if (string.Equals(_countConverted, value)) return;
+                _countConverted = value;
+                OnPropertyChanged();
+            }
+
         }
         public ICommand ButtonClickCommand
         {
@@ -38,9 +46,31 @@ namespace App4.ViewModels
                 if (_buttonClickCommand == null)
 
                     _buttonClickCommand = new Command(ButtonClickAction);
-                _buttonClickCommand++;
+                    return _buttonClickCommand;
 
             }
+        }
+        public ICommand ResetClickCommand
+        {
+            get
+            {
+                if (_resetClickCommand == null)
+
+                    _resetClickCommand = new Command(ResetAction);
+                return _resetClickCommand;
+
+            }
+        }
+
+        private void ResetAction()
+        {
+            Contador = 0;
+            CountConverted = "Has reseteado el contador";
+        }
+
+        private void ButtonClickAction()
+        {
+            Contador++;
         }
     }
 }
